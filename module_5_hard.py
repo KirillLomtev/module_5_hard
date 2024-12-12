@@ -1,3 +1,6 @@
+import hashlib
+from email.policy import default
+from locale import currency
 from time import sleep
 
 
@@ -6,10 +9,17 @@ class UrTube:
         self.users = users
         self.videos = videos
         self.current_user = current_user
+
+
     def log_in(self, nickname, password):
         for user in self.users:
             if user.nickname == nickname and user.password == hash(password):
                 self.current_user = user
+            else:
+                print('Логин или пароль неверны')
+
+    def log_out(self):
+        self.current_user = None
 
     def register(self, nickname, password, age):
         nicknames = []
@@ -40,6 +50,12 @@ class UrTube:
 
 
     def watch_video(self, title):
+        is_search = False
+        for video in self.videos:
+            if title == video.title:
+                is_search = True
+        if not is_search:
+            print('Видео не существует')
         if self.current_user == "":
             print('Войдите в аккаунт, чтобы смотреть видео')
         else:
@@ -47,13 +63,13 @@ class UrTube:
                 if title == video.title:
                     if video.adult_mode == True and self.current_user.age >= 18:
                         for i in range(1, video.duration+1):
+                            video.time_now+=1
                             sleep(1)
                             print(i, end=' ')
                         print('Конец видео')
+                        self.time_now = 0
                     else:
                         print('Вам нет 18 лет, пожалуйста, покиньте страницу')
-
-
 
 
 
